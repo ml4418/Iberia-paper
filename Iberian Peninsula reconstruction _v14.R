@@ -303,14 +303,15 @@ write.csv(rand_tf2_pspline, "rand_tf2_pspline.csv")
 ########################################################################################################
 ####################################  Reconstruction  ##################################################
 ########################################################################################################
-Iberian_all <- read.csv(paste(wd,"/Master Project/Data/Input data/Iberia_Pollen_add_INTCAL20_0313.csv",sep=""))
-Iberian<-Iberian_all[which(Iberian_all$`INTCAL2020.median`<=12000),]
+library(readxl)
+Iberian_all <- read_excel(paste(wd,"/Master Project/Data/Input data/iberia_pollen_records_1202.xlsx",sep=""))
+Iberian<-Iberian_all[which(Iberian_all$`INTCAL2020_median`<=12000),]
 #Age
 colnames(Iberian);str(Iberian)
-summary(Iberian[,"INTCAL2020.median"])
+summary(Iberian[,"INTCAL2020_median"])
 #Exclude samples with large age uncertainty
-hist((Iberian[,"INTCAL2020_95"]-Iberian[,"INTCAL2020_5"])/(2*1.645))
-which_age_keep<-which(abs((Iberian[,"INTCAL2020_95"]-Iberian[,"INTCAL2020_5"])/(2*1.645))<=100)
+summary((Iberian[,"INTCAL2020_uncert_95"]-Iberian[,"INTCAL2020_uncert_5"])/(2*1.645))
+which_age_keep<-which(abs((Iberian[,"INTCAL2020_uncert_95"]-Iberian[,"INTCAL2020_uncert_5"])/(2*1.645))<=100)
 Iberian<-Iberian[which_age_keep,]
 write.csv(Iberian,paste(wd,"/Master Project/Data/Input data/Iberia.csv",sep=""))
 
@@ -350,7 +351,7 @@ fossil_tf_Tmax<-fxTWAPLS::TWAPLS.predict.w(fit_tf_Tmax,core)
 
 
 #Use the last significant number of components
-core_sig<-cbind.data.frame(Iberian[,c("Site.Name","Latitude","Longitude","Elevation","INTCAL2020.median")],
+core_sig<-cbind.data.frame(Iberian[,c("site_name","latitude","longitude","elevation","INTCAL2020_median")],
                            fossil_tf_Tmin[["fit"]][,4],fossil_tf_gdd[["fit"]][,2],fossil_tf_alpha[["fit"]][,3], fossil_tf_Tmax[["fit"]][,4])
 colnames(core_sig)<-c("site","lat","lon","elv","age","Tmin","gdd","alpha","Tmax")
 write.csv(core_sig,paste(wd,"/Master Project/Data/Output data/Core/Iberian/Iberian_core_sig.csv",sep=""))
@@ -375,21 +376,25 @@ colnames(sse_core_sig)<-c("sse_Tmin","sse_gdd","sse_alpha","sse_Tmax")
 write.csv(sse_core_sig,paste(wd,"/Master Project/Data/Output data/Core/Iberian/Iberian_sse_core_sig.csv",sep=""))
 
 ########################################################################################################
-####################################### Sitelist Table S1 ##############################################
+####################################### Sitelist Table ##############################################
 ########################################################################################################
 #Get information for sites
-#sitelist<-Iberian[!duplicated(Iberian$Site.Name),]
-sitename<-unique(Iberian$Site.Name)
+#sitelist<-Iberian[!duplicated(Iberian$site_name),]
+sitename<-unique(Iberian$site_name)
 sitelist<-as.data.frame(sitename)
 colnames(Iberian)[1:18]
 for(i in 1:nrow(sitelist)){
   #i=i+1
-  siteinfo<-Iberian[which(Iberian$Site.Name==sitelist[i,"sitename"]),]
-  sitelist[i,c("lon","lat","elv")]<-unique(siteinfo[,c("Longitude","Latitude","Elevation")])
-  ref<-unique(siteinfo[,"Reference"])
-  if(all(ref=="")){sitelist[i,"ref"]<-""}else{sitelist[i,"ref"]<-ref[which(ref!="")]}
-  sitelist[i,"length_yr"]<-max(siteinfo[,"INTCAL2020.median"])-min(siteinfo[,"INTCAL2020.median"])
-  sitelist[i,"n_sample"]<-sum(!is.na(siteinfo[,"INTCAL2020.median"]))
+  siteinfo<-Iberian[which(Iberian$site_name==sitelist[i,"sitename"]),]
+  sitelist[i,c("lon","lat","elv")]<-unique(siteinfo[,c("longitude","latitude","elevation")])
+  ref<-unique(siteinfo[,"reference"])
+  if(all(ref=="")){
+    sitelist[i,"ref"]<-""
+  }else{
+    sitelist[i,"ref"]<-paste(ref[which(ref!=""),])
+    }
+  sitelist[i,"length_yr"]<-max(siteinfo[,"INTCAL2020_median"])-min(siteinfo[,"INTCAL2020_median"])
+  sitelist[i,"n_sample"]<-sum(!is.na(siteinfo[,"INTCAL2020_median"]))
   
 }
 sitelist<-sitelist[order(sitelist$lon, sitelist$lat), ]
@@ -406,27 +411,25 @@ for(j in 1:nrow(sitelist)){
 write.csv(sitelist,paste(wd,"/Master Project/Data/Output data/Core/Iberian/sitelist.csv",sep=""))
 
 ########################################################################################################
-#######################################    CCA  Table 2 ###############################################
+#######################################    CCA  Table  ###############################################
 ########################################################################################################
 if(!require(vegan)){ install.packages("vegan");library(vegan)}
 ord<-cca(formula=taxa~modern_pollen$Tmin+modern_pollen$Tmax+modern_pollen$alpha)
 ord
-vif.cca(ord)
-round(coef(ord),digits = 3)
+round(vif.cca(ord),digits=2)
+round(ord[["CCA"]][["biplot"]],digits = 3)
 anova(ord)
 anova(ord, by="term", permutations=999)
 anova(ord, by="axis", permutations=999)
 plot(ord,display=c("species","bp"))
 text(ord, "species", col="black", cex=0.8)
-sp_score<-scores(ord,display="species")
-sp_score[which(abs(sp_score[,1])>=2),]
-sp_score[which(abs(sp_score[,2])>=2),]
+
 
 
 ord<-cca(formula=core~core_sig$Tmin+core_sig$Tmax+core_sig$alpha,na.action=na.omit)
 ord
-vif.cca(ord)
-round(coef(ord),digits = 3)
+round(vif.cca(ord),digits=2)
+round(ord[["CCA"]][["biplot"]],digits = 3)
 anova(ord)
 anova(ord, by="term", permutations=999)
 anova(ord, by="axis", permutations=999)
@@ -437,21 +440,42 @@ points(ord,display=c("bp"),col="red")
 text(ord, "species", col="black", cex=0.7)
 text(ord, "species", col="black", labels=sp_score$taxa_number,cex=0.7)
 
-sp_score<-as.data.frame(scores(ord,display="species"))
-sp_score$taxa_number<-c(1:nrow(sp_score))
-summary(sp_score)
-sp_score[which(abs(sp_score[,1])>=1.5),]
-sp_score[which(abs(sp_score[,2])>=1.5),]
+########################################################################################################
+##################################   Find out taxa contribution  #######################################
+########################################################################################################
 
-s<-summary(ord)[["biplot"]]
-s_Tmin<-s[1,"CCA1"]^2+s[1,"CCA2"]^2
+#u and t are both centered in fxTWAPLS
+#nsig_Tmin=4
+u_t2_Tmin<-as.data.frame(fit_tf_Tmin[["u"]]/fit_tf_Tmin[["t"]]^2)
+para_Tmin<-fit_tf_Tmin[["alpha"]]
+u_t2_Tmin$taxa<-colnames(taxa)
+u_t2_Tmin_common<-u_t2_Tmin[-which(u_t2_Tmin$taxa%in%taxa_to_add),] #get those exist in fossil taxa
+u_t2_Tmin_common<-u_t2_Tmin_common[order(u_t2_Tmin_common$V1),]
+u_t2_Tmin_common<-u_t2_Tmin_common[rev(order(u_t2_Tmin_common$V1)),]
 
-sp_score$distance_Tmin<-sqrt((sp_score[,"CCA1"]-s[1,"CCA1"])^2+(sp_score[,"CCA2"]-s[1,"CCA2"])^2)
-sp_score$distance_Tmax<-sqrt((sp_score[,"CCA1"]-s[2,"CCA1"])^2+(sp_score[,"CCA2"]-s[2,"CCA2"])^2)
-sp_score$distance_alpha<-sqrt((sp_score[,"CCA1"]-s[3,"CCA1"])^2+(sp_score[,"CCA2"]-s[3,"CCA2"])^2)
-sp_score[which(sp_score$distance_Tmin<=0.5),]
-sp_score[which(sp_score$distance_Tmax<=0.5),]
-sp_score[which(sp_score$distance_alpha<=0.5),]
+#nsig_Tmax=4
+u_t2_Tmax<-as.data.frame(fit_tf_Tmax[["u"]]/fit_tf_Tmax[["t"]]^2)
+para_Tmax<-fit_tf_Tmax[["alpha"]]
+u_t2_Tmax$taxa<-colnames(taxa)
+u_t2_Tmax_common<-u_t2_Tmax[-which(u_t2_Tmax$taxa%in%taxa_to_add),] #get those exist in fossil taxa
+u_t2_Tmax_common<-u_t2_Tmax_common[order(u_t2_Tmax_common$V1),]
+u_t2_Tmax_common<-u_t2_Tmax_common[rev(order(u_t2_Tmax_common$V1)),]
+
+#nsig_alpha=3
+u_t2_alpha<-as.data.frame(fit_tf_alpha[["u"]]/fit_tf_alpha[["t"]]^2)
+para_alpha<-fit_tf_alpha[["alpha"]]
+u_t2_alpha$taxa<-colnames(taxa)
+u_t2_alpha_common<-u_t2_alpha[-which(u_t2_alpha$taxa%in%taxa_to_add),] #get those exist in fossil taxa
+u_t2_alpha_common<-u_t2_alpha_common[order(u_t2_alpha_common$V1),]
+u_t2_alpha_common<-u_t2_alpha_common[rev(order(u_t2_alpha_common$V1)),]
+
+#check common important taxa of Tmax and alpha
+intersect(u_t2_Tmax_common[1:18,"taxa"],u_t2_alpha_common[1:18,"taxa"])
+
+#check common important taxa of Tmax and alpha
+intersect(u_t2_Tmax_common[1:6,"taxa"],u_t2_alpha_common[1:6,"taxa"])
+
+
 
 ########################################################################################################
 ###########################    Calculate insolation at each site  #######################################
@@ -475,7 +499,7 @@ write.csv(plotdata,paste(wd,"/Master Project/Data/Output data/Core/Iberian/plotd
 ########################################################################################################
 ###########################   Relationship between MTWA and alpha  #####################################
 ########################################################################################################
-#Figure 4
+#Figure 
 setwd(paste(wd,"/Master Project/Data/Output data/Core plots/Iberian plots",sep=""))
 summary(plotdata$Tmax);summary(modern_pollen$Tmax)
 
@@ -493,7 +517,7 @@ p<-ggarrange(p1,p2,ncol=2)
 ggsave(file="Relationship between MTWA and alpha.jpeg",p,width=12,height=6)
 
 ########################################################################################################
-########################    Maps to show the training data  (Figure 1)  ################################
+########################    Maps to show the training data  (Figure S1)  ################################
 ########################################################################################################
 setwd(paste(wd,"/Master Project/Data/Output data/Core plots/Iberian plots",sep=""))
 #Modern sites
@@ -526,9 +550,8 @@ p<-ggplot() + geom_polygon(data = region, aes(x=long, y = lat, group = group),fi
 ggsave(file="Map of SMPDS alpha.jpeg",p,width=9,height=6)
 
 
-
 ########################################################################################################
-#####################################   Map of fossil sites and alpha  #################################
+#####################################   Map of fossil sites   #########################################
 ########################################################################################################
 #Map at 0.5 ka
 setwd(paste(wd,"/Master Project/Data/Output data/Core plots/Iberian plots",sep=""))
@@ -544,7 +567,7 @@ if(!require(maps)){ install.packages("maps");library(maps)}
 if(!require(mapdata)){ install.packages("mapdata");library(mapdata)}
 if(!require(sf)){ install.packages("sf");library(sf)}
 world <- map_data("world") 
-summary(Iberian$Longitude);summary(Iberian$Latitude)
+summary(Iberian$longitude);summary(Iberian$latitude)
 region<-world[which(world$long>(-10)&world$long<5&world$lat>36&world$lat<44),]
 Iberian_background<-background[which(background$lon>(-10)&background$lon<5&background$lat>36&background$lat<44),]
 
@@ -686,57 +709,57 @@ summary(gradient_env$alpha_anomaly)
 #Make sure 0="white"
 #min+(max-min)*(4/6)=0, so 6min+4max-4min=0, so 4max+2min=0, so min=-2max
 gradient_env_high<-gradient_env[which(gradient_env$elv_label=="high"),]
-p1<-ggplot(data=gradient_env_high[which(gradient_env_high$age!=0),],aes(x=fct_reorder(site, lon),y=age,color=Tmin_anomaly))+
+p1<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$Tmin_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=Tmin_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+  
-  scale_y_continuous(trans = "reverse",breaks=1000*seq(0.5,11.5),labels=seq(0.5,11.5))+
+  scale_y_continuous(trans = "reverse",breaks=1000*seq(1.5,11.5,by=2),labels=seq(1.5,11.5,by=2))+
   scale_colour_gradientn(colours = c("darkblue","blue","dodgerblue2","lightskyblue","white","orange","orangered"),
                          limits=c(-24,12),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
   labs(color="(a) MTCO (°C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
-p2<-ggplot(data=gradient_env_high[which(gradient_env_high$age!=0),],aes(x=fct_reorder(site, lon),y=age,color=Tmax_anomaly))+
+p2<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$Tmax_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=Tmax_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
-  scale_y_continuous(trans = "reverse",breaks=1000*seq(0.5,11.5),labels=seq(0.5,11.5))+
+  scale_y_continuous(trans = "reverse",breaks=1000*seq(1.5,11.5,by=2),labels=seq(1.5,11.5,by=2))+
   scale_colour_gradientn(colours = c("darkblue","dodgerblue2","lightskyblue","white","orange","orangered","red"),
                          limits=c(-9.9,9.9),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
   labs(color="(b) MTWA (°C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
-p3<-ggplot(data=gradient_env_high[which(gradient_env_high$age!=0),],aes(x=fct_reorder(site, lon),y=age,color=alpha_anomaly))+
+p3<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$alpha_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=alpha_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
-  scale_y_continuous(trans = "reverse",breaks=1000*seq(0.5,11.5),labels=seq(0.5,11.5))+
+  scale_y_continuous(trans = "reverse",breaks=1000*seq(1.5,11.5,by=2),labels=seq(1.5,11.5,by=2))+
   scale_colour_gradientn(colours = rev(c("darkblue","dodgerblue2","lightskyblue","white","orange","orangered","red")),
                          limits=c(-0.5,0.5),na.value = "transparent")+
   theme(axis.text.x = element_blank())+
-  labs(x="High elevation sites in the order of longitude")+
+  labs(x="W                                 High elevation sites in the order of longitude                                 E")+
   labs(color=expression("(c)"~alpha))+labs(y="Age (kyr BP)")
 #Low elv sites
 #Make sure 0="white"
 #min+(max-min)*(4/6)=0, so 6min+4max-4min=0, so 4max+2min=0, so min=-2max
 gradient_env_low<-gradient_env[which(gradient_env$elv_label=="low"),]
-p4<-ggplot(data=gradient_env_low[which(gradient_env_low$age!=0),],aes(x=fct_reorder(site, lon),y=age,color=Tmin_anomaly))+
+p4<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$Tmin_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=Tmin_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+  
-  scale_y_continuous(trans = "reverse",breaks=1000*seq(0.5,11.5),labels=seq(0.5,11.5))+
+  scale_y_continuous(trans = "reverse",breaks=1000*seq(1.5,11.5,by=2),labels=seq(1.5,11.5,by=2))+
   scale_colour_gradientn(colours = c("darkblue","blue","dodgerblue2","lightskyblue","white","orange","orangered"),
                          limits=c(-24,12),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
   labs(color="(d) MTCO (°C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
-p5<-ggplot(data=gradient_env_low[which(gradient_env_low$age!=0),],aes(x=fct_reorder(site, lon),y=age,color=Tmax_anomaly))+
+p5<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$Tmax_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=Tmax_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
-  scale_y_continuous(trans = "reverse",breaks=1000*seq(0.5,11.5),labels=seq(0.5,11.5))+
+  scale_y_continuous(trans = "reverse",breaks=1000*seq(1.5,11.5,by=2),labels=seq(1.5,11.5,by=2))+
   scale_colour_gradientn(colours = c("darkblue","dodgerblue2","lightskyblue","white","orange","orangered","red"),
                          limits=c(-9.9,9.9),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
   labs(color="(e) MTWA (°C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
-p6<-ggplot(data=gradient_env_low[which(gradient_env_low$age!=0),],aes(x=fct_reorder(site, lon),y=age,color=alpha_anomaly))+
+p6<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$alpha_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=alpha_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
-  scale_y_continuous(trans = "reverse",breaks=1000*seq(0.5,11.5),labels=seq(0.5,11.5))+
+  scale_y_continuous(trans = "reverse",breaks=1000*seq(1.5,11.5,by=2),labels=seq(1.5,11.5,by=2))+
   scale_colour_gradientn(colours = rev(c("darkblue","dodgerblue2","lightskyblue","white","orange","orangered","red")),
                          limits=c(-0.5,0.5),na.value = "transparent")+
   theme(axis.text.x = element_blank())+
-  labs(x="Low elevation sites in the order of longitude")+
+  labs(x="W                                 Low elevation sites in the order of longitude                                 E")+
   labs(color=expression("(f)"~alpha))+labs(y="Age (kyr BP)")
 
 p<-ggarrange(p1,p2,p3,p4,p5,p6,ncol=1)
@@ -744,7 +767,7 @@ p<-ggarrange(p1,p2,p3,p4,p5,p6,ncol=1)
 ggsave(file="anomaly to lon.jpeg",p,width=8,height=9)
 
 ########################################################################################################
-#####################################   Time series  Figure 3 ##########################################
+#####################################   Time series  Figure  ##########################################
 ########################################################################################################
 if(!require(sf)){ install.packages("sf");library(sf)}
 range<-function(data,nboot,variable){
@@ -788,7 +811,7 @@ p1<-ggplot()+theme_bw()+
                                          ymin=mean_Tmin_anomaly-range_Tmin_anomaly,
                                          ymax=mean_Tmin_anomaly+range_Tmin_anomaly))+
   labs(y="MTCO anomaly (°C)")+scale_x_continuous(breaks= seq(0.5,11.5))+
-  theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
+  theme(axis.title.x = element_blank())+
   annotate("text", y= max(mean_site_env$mean_Tmin_anomaly+mean_site_env$range_Tmin_anomaly,na.rm=T), x =0,label="(a)",size=5)
 
 p2<-ggplot()+theme_bw()+
@@ -799,7 +822,7 @@ p2<-ggplot()+theme_bw()+
                                          ymin=mean_Tmax_anomaly-range_Tmax_anomaly,
                                          ymax=mean_Tmax_anomaly+range_Tmax_anomaly))+
   labs(y="MTWA anomaly (°C)")+scale_x_continuous(breaks= seq(0.5,11.5))+
-  theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
+  theme(axis.title.x = element_blank())+
   annotate("text", y= max(mean_site_env$mean_Tmax_anomaly+mean_site_env$range_Tmax_anomaly,na.rm=T), x =0,label="(b)",size=5)
 
 p3<-ggplot()+theme_bw()+
@@ -831,9 +854,9 @@ p5<-ggplot()+theme_bw()+
   geom_pointrange(data=mean_site_env,aes(age_ka,mean_insol_winter_anomaly,
                                          ymin=mean_insol_winter_anomaly-range_insol_winter_anomaly,
                                          ymax=mean_insol_winter_anomaly+range_insol_winter_anomaly))+
-  labs(y=bquote('Winter insolation anmaly (W'~m^-2~')'))+
+  labs(y=bquote('Winter insolation anomaly (W'~m^-2~')'))+
   scale_x_continuous(breaks= seq(0.5,11.5))+  
-  theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
+  theme(axis.title.x = element_blank())+
   annotate("text", y= max(gradient_env$insol_winter_anomaly,na.rm=T), x =-0.5,label="(d)",size=5)
 
 p<-ggarrange(p1,p5,p2,p4,p3,ncol=2)
@@ -939,14 +962,6 @@ write.csv(df_model,paste(wd,"/Master Project/Data/Output data/Core/Iberian/df_mo
 plot_gradient<-gradient_env[which(gradient_env$age!=0),]
 for(i in 1:nrow(plot_gradient)){
   age<-plot_gradient[i,"agef"]
-  if(age=="9.5 ka"){
-    plot_gradient[i,"label_Tmin_elv"]<-as.character(paste(plot_gradient[i,"agef"]," significant"))
-  }else{
-    plot_gradient[i,"label_Tmin_elv"]<-as.character(plot_gradient[i,"agef"])
-  }
-}
-for(i in 1:nrow(plot_gradient)){
-  age<-plot_gradient[i,"agef"]
   if(age=="3.5 ka"|age=="4.5 ka"|age=="5.5 ka"|age=="6.5 ka"|age=="7.5 ka"|age=="8.5 ka"|age=="9.5 ka"){
     plot_gradient[i,"label_Tmax_lon"]<-as.character(paste(plot_gradient[i,"agef"]," significant"))
   }else{
@@ -963,7 +978,7 @@ for(i in 1:nrow(plot_gradient)){
 }
 for(i in 1:nrow(plot_gradient)){
   age<-plot_gradient[i,"agef"]
-  if(age=="3.5 ka"|age=="4.5 ka"|age=="5.5 ka"|age=="6.5 ka"|age=="7.5 ka"|age=="8.5 ka"){
+  if(age=="3.5 ka"|age=="4.5 ka"|age=="5.5 ka"|age=="6.5 ka"|age=="7.5 ka"|age=="8.5 ka"|age=="9.5 ka"){
     plot_gradient[i,"label_alpha_lon"]<-as.character(paste(plot_gradient[i,"agef"]," significant"))
   }else{
     plot_gradient[i,"label_alpha_lon"]<-as.character(plot_gradient[i,"agef"])
@@ -977,7 +992,7 @@ for(i in 1:nrow(plot_gradient)){
     plot_gradient[i,"label_alpha_elv"]<-as.character(plot_gradient[i,"agef"])
   }
 }
-############ Figure 5 alpha to lon
+############ Figure alpha to lon
 dat_text <- data.frame(
   label = plot_gradient$label_alpha_lon,
   agef   = plot_gradient$agef
@@ -989,7 +1004,7 @@ p<-ggplot(data=plot_gradient,aes(lon,alpha_anomaly))+geom_point()+theme_bw()+
   geom_text(data = dat_text, size=4,mapping = aes(x = -2.5, y = 0.33, label = label))
 ggsave(file="alpha to lon.jpeg",p,width=8,height=8)
 
-############ Figure 6 alpha to elv
+############ Figure alpha to elv
 dat_text <- data.frame(
   label = plot_gradient$label_alpha_elv,
   agef   = plot_gradient$agef
@@ -1001,7 +1016,7 @@ p<-ggplot(data=plot_gradient,aes(elv_km,alpha_anomaly))+geom_point()+theme_bw()+
   geom_text(data = dat_text, size=4,mapping = aes(x = 1.5, y = 0.33, label = label))
 ggsave(file="alpha to elv.jpeg",p,width=8,height=8)
 
-############ Figure S1 Tmax to lon
+############ Figure Tmax to lon
 dat_text <- data.frame(
   label = plot_gradient$label_Tmax_lon,
   agef   = plot_gradient$agef
@@ -1013,7 +1028,7 @@ p<-ggplot(data=plot_gradient,aes(lon,Tmax_anomaly))+geom_point()+theme_bw()+
   geom_text(data = dat_text, size=4,mapping = aes(x = -2.5, y = 7, label = label))
 ggsave(file="Tmax to lon.jpeg",p,width=8,height=8)
 
-############ Figure S2 Tmax to elv
+############ Figure Tmax to elv
 dat_text <- data.frame(
   label = plot_gradient$label_Tmax_elv,
   agef   = plot_gradient$agef
@@ -1026,7 +1041,7 @@ p<-ggplot(data=plot_gradient,aes(elv_km,Tmax_anomaly))+geom_point()+theme_bw()+
 ggsave(file="Tmax to elv.jpeg",p,width=8,height=8)
 
 
-############ Figure S3 Tmin to lon
+############ Figure Tmin to lon
 dat_text <- data.frame(
   label = plot_gradient$agef,
   agef   = plot_gradient$agef
@@ -1038,9 +1053,9 @@ p<-ggplot(data=plot_gradient,aes(lon,Tmin_anomaly))+geom_point()+theme_bw()+
   geom_text(data = dat_text, size=4,mapping = aes(x = -2.5, y =-20, label = label))
 ggsave(file="Tmin to lon.jpeg",p,width=8,height=8)
 
-############ Figure S4 Tmin to elv
+############ Figure Tmin to elv
 dat_text <- data.frame(
-  label = plot_gradient$label_Tmin_elv,
+  label = plot_gradient$agef,
   agef   = plot_gradient$agef
 )
 p<-ggplot(data=plot_gradient,aes(elv_km,Tmin_anomaly))+geom_point()+theme_bw()+
@@ -1807,3 +1822,24 @@ p3<-ggplot()+theme_bw()+
 
 p<-ggarrange(p1,p2,p3,ncol=1)
 ggsave(file="PACMEDY simulations.png",p,width=6,height=10)
+
+#######################################################################################################
+##################################   Check Basa de la Mora   #######################################
+#######################################################################################################
+setwd(paste(wd,"/Master Project/Data/Output data/Core plots/Iberian plots",sep=""))
+
+plotdata1<-cbind.data.frame(core_sig,sse_core_sig)
+plotdata1<-plotdata1[which(plotdata1$alpha>=0&plotdata1$alpha<=1.26),]
+sitename<-"Basa de la Mora"
+xbreak<-2000*c(seq(0,6))
+plotsite<-plotdata1[which(plotdata1$site==sitename),]
+
+lon<-unique(plotsite$lon);  lat<-unique(plotsite$lat);  elv<-unique(plotsite$elv)
+
+p_Tmax<-ggplot(data=plotsite)+theme_bw()+geom_point(aes(age,Tmax))+geom_line(aes(age,Tmax))+
+  geom_ribbon(aes(x=age,ymin=Tmax-sse_Tmax*1.96,ymax=Tmax+sse_Tmax*1.96),alpha=0.36)+
+  labs(y= "Reconstructed MTWA (°C)", x = "Age (yr BP)")+
+  scale_y_continuous(labels = function(x) sprintf("%g", x))+
+  scale_x_continuous(breaks = xbreak,limits=c(-1000,12000))
+
+ggsave(file=paste("Lon",round(lon,digits=2),"Lat",round(lat,digits=2),sitename,"MTWA reconstruction results.jpeg"),p_Tmax,width=8,height=6)
