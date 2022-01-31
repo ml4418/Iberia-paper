@@ -34,9 +34,7 @@ get_MTWA<-function(MTCO,GDD0){
 ########################################################################################################
 #######################################    Training  ###################################################
 ########################################################################################################
-#install.packages("fxTWAPLS")
-#install.packages("remotes")
-#remotes::install_github("special-uor/fxTWAPLS", "dev")
+install.packages("fxTWAPLS")
 source(paste(wd,"/Master Project/Script/Reconstruction paper/Iberian Peninsula reconstruction functions.R",sep=""))
 
 modern_pollen<- read.csv(paste(wd,"/Master Project/Data/Input data/Modern_Pollen_gdd_alpha_Tmin.csv",sep=""), row.names=1)
@@ -96,21 +94,21 @@ plot.train.sig<-function(name,fit_tf1_Tmin,fit_tf2_Tmin,nsig_tf1_Tmin,nsig_tf2_T
   p_Tmin_tf1<-ggplot(data=train,aes(Tmin,Tmin_tf1))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=1, intercept=0)+
     geom_smooth(method='lm', formula= y~x,color='red')+ylim(min_Tmin,max_Tmin)+xlim(min_Tmin,max_Tmin)+
     annotate("text", y= max_Tmin, x = min_Tmin,label="(a)")+
-    labs(y="fxTWA-PLS1 MTCO (¡ãC)",x="MTCO (¡ãC)")
+    labs(y="fxTWA-PLS1 MTCO (Â¡Ã£C)",x="MTCO (Â¡Ã£C)")
   p_Tmin_tf2<-ggplot(data=train,aes(Tmin,Tmin_tf2))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=1, intercept=0)+
     geom_smooth(method='lm', formula= y~x,color='red')+ylim(min_Tmin,max_Tmin)+xlim(min_Tmin,max_Tmin)+
     annotate("text", y= max_Tmin, x = min_Tmin,label="(b)")+
-    labs(y="fxTWA-PLS2 MTCO (¡ãC)",x="MTCO (¡ãC)")
+    labs(y="fxTWA-PLS2 MTCO (Â¡Ã£C)",x="MTCO (Â¡Ã£C)")
   
   
   p_Tmax_tf1<-ggplot(data=train,aes(Tmax,Tmax_tf1))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=1, intercept=0)+
     geom_smooth(method='lm', formula= y~x,color='red')+ylim(min_Tmax,max_Tmax)+xlim(min_Tmax,max_Tmax)+
     annotate("text", y= max_Tmax, x = min_Tmax,label="(c)")+
-    labs(y="fxTWA-PLS1 MTWA (¡ãC)",x="MTWA (¡ãC)")
+    labs(y="fxTWA-PLS1 MTWA (Â¡Ã£C)",x="MTWA (Â¡Ã£C)")
   p_Tmax_tf2<-ggplot(data=train,aes(Tmax,Tmax_tf2))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=1, intercept=0)+
     geom_smooth(method='lm', formula= y~x,color='red')+ylim(min_Tmax,max_Tmax)+xlim(min_Tmax,max_Tmax)+
     annotate("text", y= max_Tmax, x = min_Tmax,label="(d)")+
-    labs(y="fxTWA-PLS2 MTWA (¡ãC)",x="MTWA (¡ãC)")
+    labs(y="fxTWA-PLS2 MTWA (Â¡Ã£C)",x="MTWA (Â¡Ã£C)")
   
   p_alpha_tf1<-ggplot(data=train,aes(alpha,alpha_tf1))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=1, intercept=0)+
     geom_smooth(method='lm', formula= y~x,color='red')+ylim(min_alpha,max_alpha)+xlim(min_alpha,max_alpha)+
@@ -157,21 +155,21 @@ plot.resid.sig<-function(name,fit_tf1_Tmin,fit_tf2_Tmin,nsig_tf1_Tmin,nsig_tf2_T
   p_Tmin_tf1<-ggplot(data=resid,aes(Tmin,Tmin_tf1))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=0, intercept=0)+
     geom_smooth(method='loess', formula= y~x,color='red', se = FALSE)+ylim(min_y_Tmin,max_y_Tmin)+
     annotate("text", y= max_y_Tmin, x = min(resid[,"Tmin"]),label="(a)")+
-    labs(y="fxTWA-PLS1 MTCO (¡ãC)",x="MTCO (¡ãC)")
+    labs(y="fxTWA-PLS1 MTCO (Â¡Ã£C)",x="MTCO (Â¡Ã£C)")
   p_Tmin_tf2<-ggplot(data=resid,aes(Tmin,Tmin_tf2))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=0, intercept=0)+
     geom_smooth(method='loess', formula= y~x,color='red', se = FALSE)+ylim(min_y_Tmin,max_y_Tmin)+
     annotate("text", y= max_y_Tmin, x = min(resid[,"Tmin"]),label="(b)")+
-    labs(y="fxTWA-PLS2 MTCO (¡ãC)",x="MTCO (¡ãC)")
+    labs(y="fxTWA-PLS2 MTCO (Â¡Ã£C)",x="MTCO (Â¡Ã£C)")
   
   
   p_Tmax_tf1<-ggplot(data=resid,aes(Tmax,Tmax_tf1))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=0, intercept=0)+
     geom_smooth(method='loess', formula= y~x,color='red', se = FALSE)+ylim(min_y_Tmax,max_y_Tmax)+
     annotate("text", y= max_y_Tmax, x = min(resid[,"Tmax"]),label="(c)")+
-    labs(y="fxTWA-PLS1 MTWA (¡ãC)",x="MTWA (¡ãC)")
+    labs(y="fxTWA-PLS1 MTWA (Â¡Ã£C)",x="MTWA (Â¡Ã£C)")
   p_Tmax_tf2<-ggplot(data=resid,aes(Tmax,Tmax_tf2))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=0, intercept=0)+
     geom_smooth(method='loess', formula= y~x,color='red', se = FALSE)+ylim(min_y_Tmax,max_y_Tmax)+
     annotate("text", y= max_y_Tmax, x = min(resid[,"Tmax"]),label="(d)")+
-    labs(y="fxTWA-PLS2 MTWA (¡ãC)",x="MTWA (¡ãC)")
+    labs(y="fxTWA-PLS2 MTWA (Â¡Ã£C)",x="MTWA (Â¡Ã£C)")
   
   p_alpha_tf1<-ggplot(data=resid,aes(alpha,alpha_tf1))+geom_point(size=0.8)+theme_bw()+geom_abline(slope=0, intercept=0)+
     geom_smooth(method='loess', formula= y~x,color='red', se = FALSE)+ylim(min_y_alpha,max_y_alpha)+
@@ -516,12 +514,12 @@ setwd(paste(wd,"/Master Project/Data/Output data/Core plots/Iberian plots",sep="
 summary(plotdata$Tmax);summary(modern_pollen$Tmax)
 
 p1<-ggplot(modern_pollen,aes(alpha,Tmax))+geom_point(size=0.8)+theme_bw()+
-  labs(x= expression(alpha), y = "MTWA (¡ãC)")+ylim(0,35)+
+  labs(x= expression(alpha), y = "MTWA (Â¡Ã£C)")+ylim(0,35)+
   theme(legend.position = "none",
         axis.text=element_text(size=14),axis.title=element_text(size=14))+
   annotate("text", y= 35, x =0,label="(a)",size=6)
 p2<-ggplot(plotdata,aes(alpha,Tmax))+geom_point(size=0.8)+theme_bw()+
-  labs(x= expression(alpha), y = "MTWA (¡ãC)")+ylim(0,35)+
+  labs(x= expression(alpha), y = "MTWA (Â¡Ã£C)")+ylim(0,35)+
   theme(legend.position = "none",axis.title.y = element_blank(),axis.text.y = element_blank(),
         axis.text=element_text(size=14),axis.title=element_text(size=14))+
   annotate("text", y= 35, x =0,label="(b)",size=6)
@@ -554,8 +552,8 @@ p<-ggplot() + geom_polygon(data = region, aes(x=long, y = lat, group = group),fi
   geom_point(data = modern_pollen, aes(x = Long, y = Lat, color= alpha), size = 1)+
   scale_colour_gradientn(colours = rev(c("blue","dodgerblue2","lightskyblue","white","gold","orangered","red")),na.value = "grey")+
   scalebar(region, dist = 1000, dist_unit = "km",transform = TRUE, model = "WGS84",st.size = 3)+
-  scale_y_continuous(breaks = yat, labels = paste0(yat,'¡ãN')) +
-  scale_x_continuous(breaks = xat, labels = paste0(xat,'¡ãE')) +
+  scale_y_continuous(breaks = yat, labels = paste0(yat,'Â¡Ã£N')) +
+  scale_x_continuous(breaks = xat, labels = paste0(xat,'Â¡Ã£E')) +
   theme(axis.text=element_text(size=12),legend.position = "right")+
   labs(x="Longitude",y="Latitude",colour =expression(alpha))
 
@@ -609,9 +607,9 @@ p1<-ggplot()+geom_point(data=Iberian_background,aes(lon,lat,color=Tmin),size=3,s
   geom_polygon(data = region,aes(x=long, y = lat, group = group),alpha=0,color='black') +
   geom_point(data=sitelist,aes(lon,lat,shape=elv_label),size=2)+
   scale_colour_gradientn(colours = c("blue","dodgerblue2","lightskyblue","white","gold","orangered","red"),na.value = "grey")+
-  labs(x="Longitude",y="Latitude",colour ="MTCO (¡ãC)")+
-  scale_x_continuous(breaks = c(-10,-5,0,5),labels=c("10 ¡ãW","5 ¡ãW","0 ¡ãE","5 ¡ãE"))+
-  scale_y_continuous(breaks = c(36,38,40,42,44),labels=c("36 ¡ãN","38 ¡ãN","40 ¡ãN","42 ¡ãN","44 ¡ãN"))+ 
+  labs(x="Longitude",y="Latitude",colour ="MTCO (Â¡Ã£C)")+
+  scale_x_continuous(breaks = c(-10,-5,0,5),labels=c("10 Â¡Ã£W","5 Â¡Ã£W","0 Â¡Ã£E","5 Â¡Ã£E"))+
+  scale_y_continuous(breaks = c(36,38,40,42,44),labels=c("36 Â¡Ã£N","38 Â¡Ã£N","40 Â¡Ã£N","42 Â¡Ã£N","44 Â¡Ã£N"))+ 
   scale_shape_manual(values=c("high"=17,"low"=15),guide = 'none')+
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank())+
@@ -620,9 +618,9 @@ p2<-ggplot()+geom_point(data=Iberian_background,aes(lon,lat,color=Tmax),size=3,s
   geom_polygon(data = region,aes(x=long, y = lat, group = group),alpha=0,color='black') +
   geom_point(data=sitelist,aes(lon,lat,shape=elv_label),size=2)+
   scale_colour_gradientn(colours = c("blue","dodgerblue2","lightskyblue","white","gold","orangered","red"),na.value = "grey")+
-  labs(x="Longitude",y="Latitude",colour ="MTWA (¡ãC)")+
-  scale_x_continuous(breaks = c(-10,-5,0,5),labels=c("10 ¡ãW","5 ¡ãW","0 ¡ãE","5 ¡ãE"))+
-  scale_y_continuous(breaks = c(36,38,40,42,44),labels=c("36 ¡ãN","38 ¡ãN","40 ¡ãN","42 ¡ãN","44 ¡ãN"))+ 
+  labs(x="Longitude",y="Latitude",colour ="MTWA (Â¡Ã£C)")+
+  scale_x_continuous(breaks = c(-10,-5,0,5),labels=c("10 Â¡Ã£W","5 Â¡Ã£W","0 Â¡Ã£E","5 Â¡Ã£E"))+
+  scale_y_continuous(breaks = c(36,38,40,42,44),labels=c("36 Â¡Ã£N","38 Â¡Ã£N","40 Â¡Ã£N","42 Â¡Ã£N","44 Â¡Ã£N"))+ 
   scale_shape_manual(values=c("high"=17,"low"=15),guide = 'none')+
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank())+
@@ -632,8 +630,8 @@ p3<-ggplot()+geom_point(data=Iberian_background,aes(lon,lat,color=alpha),size=3,
   geom_point(data=sitelist,aes(lon,lat,shape=elv_label),size=2)+
   scale_colour_gradientn(colours = rev(c("blue","dodgerblue2","lightskyblue","white","gold","orangered","red")),na.value = "grey")+
   labs(x="Longitude",y="Latitude",colour =expression(alpha))+
-  scale_x_continuous(breaks = c(-10,-5,0,5),labels=c("10 ¡ãW","5 ¡ãW","0 ¡ãE","5 ¡ãE"))+
-  scale_y_continuous(breaks = c(36,38,40,42,44),labels=c("36 ¡ãN","38 ¡ãN","40 ¡ãN","42 ¡ãN","44 ¡ãN"))+ 
+  scale_x_continuous(breaks = c(-10,-5,0,5),labels=c("10 Â¡Ã£W","5 Â¡Ã£W","0 Â¡Ã£E","5 Â¡Ã£E"))+
+  scale_y_continuous(breaks = c(36,38,40,42,44),labels=c("36 Â¡Ã£N","38 Â¡Ã£N","40 Â¡Ã£N","42 Â¡Ã£N","44 Â¡Ã£N"))+ 
   scale_shape_manual(values=c("high"=17,"low"=15),guide = 'none')+
   annotate("text",x=-10,y=44,label="(c)")
 p<-ggarrange(p1,p2,p3,ncol=1)
@@ -727,7 +725,7 @@ p1<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$Tmin_anomaly)),
   scale_colour_gradientn(colours = c("darkblue","blue","dodgerblue2","lightskyblue","white","orange","orangered"),
                          limits=c(-24,12),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
-  labs(color="(a) MTCO (¡ãC)")+labs(y="Age (kyr BP)")
+  labs(color="(a) MTCO (Â¡Ã£C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
 p2<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$Tmax_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=Tmax_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
@@ -735,7 +733,7 @@ p2<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$Tmax_anomaly)),
   scale_colour_gradientn(colours = c("darkblue","dodgerblue2","lightskyblue","white","orange","orangered","red"),
                          limits=c(-9.9,9.9),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
-  labs(color="(b) MTWA (¡ãC)")+labs(y="Age (kyr BP)")
+  labs(color="(b) MTWA (Â¡Ã£C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
 p3<-ggplot(data=gradient_env_high[which(!is.na(gradient_env_high$alpha_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=alpha_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
@@ -755,7 +753,7 @@ p4<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$Tmin_anomaly)),],
   scale_colour_gradientn(colours = c("darkblue","blue","dodgerblue2","lightskyblue","white","orange","orangered"),
                          limits=c(-24,12),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
-  labs(color="(d) MTCO (¡ãC)")+labs(y="Age (kyr BP)")
+  labs(color="(d) MTCO (Â¡Ã£C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
 p5<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$Tmax_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=Tmax_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
@@ -763,7 +761,7 @@ p5<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$Tmax_anomaly)),],
   scale_colour_gradientn(colours = c("darkblue","dodgerblue2","lightskyblue","white","orange","orangered","red"),
                          limits=c(-9.9,9.9),na.value = "transparent")+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
-  labs(color="(e) MTWA (¡ãC)")+labs(y="Age (kyr BP)")
+  labs(color="(e) MTWA (Â¡Ã£C)")+labs(y="Age (kyr BP)")
 #min+(max-min)*(3/6)=0
 p6<-ggplot(data=gradient_env_low[which(!is.na(gradient_env_low$alpha_anomaly)),],aes(x=fct_reorder(site, lon),y=age,color=alpha_anomaly))+
   geom_point(size=2.5,shape=15)+theme_dark()+
@@ -822,7 +820,7 @@ p1<-ggplot()+theme_bw()+
   geom_pointrange(data=mean_site_env,aes(age_ka,mean_Tmin_anomaly,
                                          ymin=mean_Tmin_anomaly-range_Tmin_anomaly,
                                          ymax=mean_Tmin_anomaly+range_Tmin_anomaly))+
-  labs(y="MTCO anomaly (¡ãC)")+scale_x_continuous(breaks= seq(0.5,11.5))+
+  labs(y="MTCO anomaly (Â¡Ã£C)")+scale_x_continuous(breaks= seq(0.5,11.5))+
   theme(axis.title.x = element_blank())+
   annotate("text", y= max(mean_site_env$mean_Tmin_anomaly+mean_site_env$range_Tmin_anomaly,na.rm=T), x =0,label="(a)",size=5)
 
@@ -833,7 +831,7 @@ p2<-ggplot()+theme_bw()+
   geom_pointrange(data=mean_site_env,aes(age_ka,mean_Tmax_anomaly,
                                          ymin=mean_Tmax_anomaly-range_Tmax_anomaly,
                                          ymax=mean_Tmax_anomaly+range_Tmax_anomaly))+
-  labs(y="MTWA anomaly (¡ãC)")+scale_x_continuous(breaks= seq(0.5,11.5))+
+  labs(y="MTWA anomaly (Â¡Ã£C)")+scale_x_continuous(breaks= seq(0.5,11.5))+
   theme(axis.title.x = element_blank())+
   annotate("text", y= max(mean_site_env$mean_Tmax_anomaly+mean_site_env$range_Tmax_anomaly,na.rm=T), x =0,label="(b)",size=5)
 
@@ -1010,7 +1008,7 @@ dat_text <- data.frame(
   agef   = plot_gradient$agef
 )
 p<-ggplot(data=plot_gradient,aes(lon,alpha_anomaly))+geom_point()+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (¡ãE)",y=expression(alpha~"anomaly to 0.5 ka"))+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (Â¡Ã£E)",y=expression(alpha~"anomaly to 0.5 ka"))+
   facet_wrap(vars(agef),nrow=3)+geom_abline(intercept=0,slope=0)+ 
   theme(strip.background = element_blank(),strip.text.x = element_blank())+ 
   geom_text(data = dat_text, size=4,mapping = aes(x = -2.5, y = 0.33, label = label))
@@ -1034,7 +1032,7 @@ dat_text <- data.frame(
   agef   = plot_gradient$agef
 )
 p<-ggplot(data=plot_gradient,aes(lon,Tmax_anomaly))+geom_point()+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (¡ãE)",y="MTWA (¡ãC) anomaly to 0.5 ka")+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (Â¡Ã£E)",y="MTWA (Â¡Ã£C) anomaly to 0.5 ka")+
   facet_wrap(vars(agef),nrow=3)+geom_abline(intercept=0,slope=0)+ 
   theme(strip.background = element_blank(),strip.text.x = element_blank())+ 
   geom_text(data = dat_text, size=4,mapping = aes(x = -2.5, y = 7, label = label))
@@ -1046,7 +1044,7 @@ dat_text <- data.frame(
   agef   = plot_gradient$agef
 )
 p<-ggplot(data=plot_gradient,aes(elv_km,Tmax_anomaly))+geom_point()+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Elevation (km)",y="MTWA (¡ãC) anomaly to 0.5 ka")+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Elevation (km)",y="MTWA (Â¡Ã£C) anomaly to 0.5 ka")+
   facet_wrap(vars(agef),nrow=3)+geom_abline(intercept=0,slope=0)+ 
   theme(strip.background = element_blank(),strip.text.x = element_blank())+ 
   geom_text(data = dat_text, size=4,mapping = aes(x = 1.5, y = 7, label = label))
@@ -1059,7 +1057,7 @@ dat_text <- data.frame(
   agef   = plot_gradient$agef
 )
 p<-ggplot(data=plot_gradient,aes(lon,Tmin_anomaly))+geom_point()+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (¡ãE)",y="MTCO (¡ãC) anomaly to 0.5 ka")+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (Â¡Ã£E)",y="MTCO (Â¡Ã£C) anomaly to 0.5 ka")+
   facet_wrap(vars(agef),nrow=3)+geom_abline(intercept=0,slope=0)+ 
   theme(strip.background = element_blank(),strip.text.x = element_blank())+ 
   geom_text(data = dat_text, size=4,mapping = aes(x = -2.5, y =-20, label = label))
@@ -1071,7 +1069,7 @@ dat_text <- data.frame(
   agef   = plot_gradient$agef
 )
 p<-ggplot(data=plot_gradient,aes(elv_km,Tmin_anomaly))+geom_point()+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Elevation (km)",y="MTCO (¡ãC) anomaly to 0.5 ka")+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Elevation (km)",y="MTCO (Â¡Ã£C) anomaly to 0.5 ka")+
   facet_wrap(vars(agef),nrow=3)+geom_abline(intercept=0,slope=0)+ 
   theme(strip.background = element_blank(),strip.text.x = element_blank())+ 
   geom_text(data = dat_text, size=4,mapping = aes(x = 1.5, y = -20, label = label))
@@ -1168,17 +1166,17 @@ df_model_alpha_lon[which(df_model_alpha_lon$p.slope<0.05),"age"]
 plot_gradient$elv_label<-factor(plot_gradient$elv_label,levels=c("high","low"))
 
 p1<-ggplot(data=plot_gradient[which(plot_gradient$age!=500),],aes(lon,alpha_anomaly))+geom_point(size=1)+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (¡ãE)",y=expression(alpha~"anomaly to 0.5 ka"))+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (Â¡Ã£E)",y=expression(alpha~"anomaly to 0.5 ka"))+
   facet_grid(elv_label~agef)+geom_abline(intercept=0,slope=0)
 ggsave(file="alpha west-east gradient to elv.jpeg",p1,width=8,height=6)
 
 p2<-ggplot(data=plot_gradient[which(plot_gradient$age!=500),],aes(lon,Tmax_anomaly))+geom_point(size=1)+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (¡ãE)",y="MTWA (¡ãC) anomaly to 0.5 ka")+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (Â¡Ã£E)",y="MTWA (Â¡Ã£C) anomaly to 0.5 ka")+
   facet_grid(elv_label~agef)+geom_abline(intercept=0,slope=0)
 ggsave(file="Tmax west-east gradient to elv.jpeg",p2,width=8,height=6)
 
 p3<-ggplot(data=plot_gradient[which(plot_gradient$age!=500),],aes(lon,Tmin_anomaly))+geom_point(size=1)+theme_bw()+
-  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (¡ãE)",y="MTCO (¡ãC) anomaly to 0.5 ka")+
+  geom_smooth(method="lm",formula="y~x",col="red")+labs(x="Longitude (Â¡Ã£E)",y="MTCO (Â¡Ã£C) anomaly to 0.5 ka")+
   facet_grid(elv_label~agef)+geom_abline(intercept=0,slope=0)
 ggsave(file="Tmin west-east gradient to elv.jpeg",p3,width=8,height=6)
 
@@ -1366,9 +1364,9 @@ D_Iberian_winter$age_kyr<-D_Iberian_winter$age/1000
 D_Iberian_summer$age_kyr<-D_Iberian_summer$age/1000
 
 ggplot(D_Iberian_winter,aes(age_kyr,Tmin,color=site))+geom_point()+geom_line()+theme(legend.position = "bottom")+
-  labs(x="age (kyr)",y="MTCO (¡ãC)")
+  labs(x="age (kyr)",y="MTCO (Â¡Ã£C)")
 ggplot(D_Iberian_summer,aes(age_kyr,Tmax,color=site))+geom_point()+geom_line()+theme(legend.position = "bottom")+
-  labs(x="age (kyr)",y="MTWA (¡ãC)")
+  labs(x="age (kyr)",y="MTWA (Â¡Ã£C)")
 
 get_gradient2<-function(plotdata,variable,age,range){
   plotdata$site<-as.factor(plotdata$site)
@@ -1445,18 +1443,18 @@ ggplot()+geom_point(data=gradient_winter_Kaufman,aes(lon,lat),size=3,shape=15)+t
   geom_polygon(data = region,aes(x=long, y = lat, group = group),alpha=0,color='black') 
 
 ggplot(gradient_winter_Kaufman,aes(age,Tmin_anomaly,color=site))+theme_bw()+geom_point()+geom_line()+theme(legend.position = "bottom")+
-  labs(x="age (kyr)",y="MTCO (¡ãC)")
+  labs(x="age (kyr)",y="MTCO (Â¡Ã£C)")
 ggplot(gradient_summer_Kaufman,aes(age,Tmax_anomaly,color=site))+theme_bw()+geom_point()+geom_line()+theme(legend.position = "bottom")+
-  labs(x="age (kyr)",y="MTWA (¡ãC)")
+  labs(x="age (kyr)",y="MTWA (Â¡Ã£C)")
 
 p1<-ggplot(D_Iberian_winter[which(D_Iberian_winter$site%in%unique(gradient_winter_Kaufman$site)),],aes(age_kyr,Tmin,color=site))+
   theme_bw()+geom_point()+geom_line()+
-  labs(x=NULL,y="MTCO (¡ãC)")+scale_x_continuous(breaks= seq(0.5,11.5),limits=c(0,12))+
+  labs(x=NULL,y="MTCO (Â¡Ã£C)")+scale_x_continuous(breaks= seq(0.5,11.5),limits=c(0,12))+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank(),legend.position = "none")+
   annotate("text", y= 11, x =0,label="(a)",size=5)
 p2<-ggplot(D_Iberian_summer[which(D_Iberian_summer$site%in%unique(gradient_summer_Kaufman$site)),],aes(age_kyr,Tmax,color=site))+
   theme_bw()+geom_point()+geom_line()+theme(legend.position = "bottom")+
-  labs(x="Age (kyr)",y="MTWA (¡ãC)")+scale_x_continuous(breaks= seq(0.5,11.5),limits=c(0,12))+
+  labs(x="Age (kyr)",y="MTWA (Â¡Ã£C)")+scale_x_continuous(breaks= seq(0.5,11.5),limits=c(0,12))+
   annotate("text", y= 30, x =0,label="(b)",size=5)
 p<-ggarrange(p1,p2,ncol=1)
 ggsave(file="Kaufman individual sites.jpeg",p,width=8,height=8)
@@ -1503,7 +1501,7 @@ p_this1<-ggplot()+theme_bw()+
   geom_pointrange(data=mean_site_env,aes(age_ka,mean_Tmin_anomaly,
                                          ymin=mean_Tmin_anomaly-range_Tmin_anomaly,
                                          ymax=mean_Tmin_anomaly+range_Tmin_anomaly))+
-  labs(y="MTCO anomaly (¡ãC)")+scale_x_continuous(breaks= seq(0.5,11.5))+
+  labs(y="MTCO anomaly (Â¡Ã£C)")+scale_x_continuous(breaks= seq(0.5,11.5))+
   scale_y_continuous(breaks= seq(min_Tmin,max_Tmin,by=2),limits=c(min_Tmin,max_Tmin))+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
   annotate("text", y= max_Tmin, x =0,label="(a)",size=5)
@@ -1515,7 +1513,7 @@ p_this2<-ggplot()+theme_bw()+
   geom_pointrange(data=mean_site_env,aes(age_ka,mean_Tmax_anomaly,
                                          ymin=mean_Tmax_anomaly-range_Tmax_anomaly,
                                          ymax=mean_Tmax_anomaly+range_Tmax_anomaly))+
-  labs(y="MTWA anomaly (¡ãC)")+scale_x_continuous(breaks= seq(0.5,11.5))+
+  labs(y="MTWA anomaly (Â¡Ã£C)")+scale_x_continuous(breaks= seq(0.5,11.5))+
   scale_y_continuous(breaks= seq(min_Tmax,max_Tmax),limits=c(min_Tmax,max_Tmax))+
   theme(axis.text.x = element_blank(),axis.title.x = element_blank())+
   annotate("text", y= max_Tmax, x =0,label="(b)",size=5)
@@ -1688,11 +1686,11 @@ colnames(df1)<-c("age","age_100yrbin","month","T","sd_T")
 df1_winter<-df1[which(df1$month==12|df1$month==1|df1$month==2),]
 df1_winter<-aggregate(df1_winter,by=list(df1_winter$age_100yrbin),FUN=mean)
 ggplot(df1_winter,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="MPI  MTCO (¡ãC)",x="Age (yr BP)")
+  labs(y="MPI  MTCO (Â¡Ã£C)",x="Age (yr BP)")
 df1_summer<-df1[which(df1$month==6|df1$month==7|df1$month==8),]
 df1_summer<-aggregate(df1_summer,by=list(df1_summer$age_100yrbin),FUN=mean)
 ggplot(df1_summer,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="MPI  MTWA (¡ãC)",x="Age (yr BP)")
+  labs(y="MPI  MTWA (Â¡Ã£C)",x="Age (yr BP)")
 
 #Precipitation
 pr_Iberian<-pr_MPI_Iberian[,-c(1,2)]
@@ -1721,11 +1719,11 @@ colnames(df2)<-c("age","age_100yrbin","month","T","sd_T")
 df2_winter<-df2[which(df2$month==12|df2$month==1|df2$month==2),]
 df2_winter<-aggregate(df2_winter,by=list(df2_winter$age_100yrbin),FUN=mean)
 ggplot(df2_winter,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="AWI  MTCO (¡ãC)",x="Age (yr BP)")
+  labs(y="AWI  MTCO (Â¡Ã£C)",x="Age (yr BP)")
 df2_summer<-df2[which(df2$month==6|df2$month==7|df2$month==8),]
 df2_summer<-aggregate(df2_summer,by=list(df2_summer$age_100yrbin),FUN=mean)
 ggplot(df2_summer,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="AWI  MTWA (¡ãC)",x="Age (yr BP)")
+  labs(y="AWI  MTWA (Â¡Ã£C)",x="Age (yr BP)")
 
 #Precipitation
 pr_Iberian<-pr_AWI_Iberian[,-c(1,2)]
@@ -1754,11 +1752,11 @@ colnames(df3)<-c("age","age_100yrbin","month","T","sd_T")
 df3_winter<-df3[which(df3$month==12|df3$month==1|df3$month==2),]
 df3_winter<-aggregate(df3_winter,by=list(df3_winter$age_100yrbin),FUN=mean)
 ggplot(df3_winter,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="TR5AS  MTCO (¡ãC)",x="Age (yr BP)")
+  labs(y="TR5AS  MTCO (Â¡Ã£C)",x="Age (yr BP)")
 df3_summer<-df3[which(df3$month==6|df3$month==7|df3$month==8),]
 df3_summer<-aggregate(df3_summer,by=list(df3_summer$age_100yrbin),FUN=mean)
 ggplot(df3_summer,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="TR5AS  MTWA (¡ãC)",x="Age (yr BP)")
+  labs(y="TR5AS  MTWA (Â¡Ã£C)",x="Age (yr BP)")
 
 #Precipitation
 pr_Iberian<-pr_TR5AS_Iberian[,-c(1,2)]
@@ -1787,11 +1785,11 @@ colnames(df4)<-c("age","age_100yrbin","month","T","sd_T")
 df4_winter<-df4[which(df4$month==12|df4$month==1|df4$month==2),]
 df4_winter<-aggregate(df4_winter,by=list(df4_winter$age_100yrbin),FUN=mean)
 ggplot(df4_winter,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="TR6AV  MTCO (¡ãC)",x="Age (yr BP)")
+  labs(y="TR6AV  MTCO (Â¡Ã£C)",x="Age (yr BP)")
 df4_summer<-df4[which(df4$month==6|df4$month==7|df4$month==8),]
 df4_summer<-aggregate(df4_summer,by=list(df4_summer$age_100yrbin),FUN=mean)
 ggplot(df4_summer,aes(age_100yrbin,T))+geom_point()+geom_line()+theme_bw()+
-  labs(y="TR6AV  MTWA (¡ãC)",x="Age (yr BP)")
+  labs(y="TR6AV  MTWA (Â¡Ã£C)",x="Age (yr BP)")
 
 #Precipitation
 pr_Iberian<-pr_TR6AV_Iberian[,-c(1,2)]
@@ -1813,7 +1811,7 @@ p1<-ggplot()+theme_bw()+
   geom_point(data=df2_winter,aes(age_100yrbin,T),col="red")+geom_line(data=df2_winter,aes(age_100yrbin,T),col="red")+
   geom_point(data=df3_winter,aes(age_100yrbin,T),col="blue")+geom_line(data=df3_winter,aes(age_100yrbin,T),col="blue")+
   geom_point(data=df4_winter,aes(age_100yrbin,T),col="gold2")+geom_line(data=df4_winter,aes(age_100yrbin,T),col="gold2")+
-  labs(y="MTCO (¡ãC)",x=NULL)+annotate("text",x=0,y=10,label="(a)")+
+  labs(y="MTCO (Â¡Ã£C)",x=NULL)+annotate("text",x=0,y=10,label="(a)")+
   theme(axis.text.x=element_blank())
 
 p2<-ggplot()+theme_bw()+
@@ -1821,7 +1819,7 @@ p2<-ggplot()+theme_bw()+
   geom_point(data=df2_summer,aes(age_100yrbin,T),col="red")+geom_line(data=df2_summer,aes(age_100yrbin,T),col="red")+
   geom_point(data=df3_summer,aes(age_100yrbin,T),col="blue")+geom_line(data=df3_summer,aes(age_100yrbin,T),col="blue")+
   geom_point(data=df4_summer,aes(age_100yrbin,T),col="gold2")+geom_line(data=df4_summer,aes(age_100yrbin,T),col="gold2")+
-  labs(y="MTWA (¡ãC)",x=NULL)+annotate("text",x=0,y=23,label="(b)")+
+  labs(y="MTWA (Â¡Ã£C)",x=NULL)+annotate("text",x=0,y=23,label="(b)")+
   theme(axis.text.x=element_blank())
 
 p3<-ggplot()+theme_bw()+
@@ -1950,7 +1948,7 @@ lon<-unique(plotsite$lon);  lat<-unique(plotsite$lat);  elv<-unique(plotsite$elv
 
 p_Tmax<-ggplot(data=plotsite)+theme_bw()+geom_point(aes(age,Tmax))+geom_line(aes(age,Tmax))+
   geom_ribbon(aes(x=age,ymin=Tmax-sse_Tmax*1.96,ymax=Tmax+sse_Tmax*1.96),alpha=0.36)+
-  labs(y= "Reconstructed MTWA (¡ãC)", x = "Age (yr BP)")+
+  labs(y= "Reconstructed MTWA (Â¡Ã£C)", x = "Age (yr BP)")+
   scale_y_continuous(labels = function(x) sprintf("%g", x))+
   scale_x_continuous(breaks = xbreak,limits=c(-1000,12000))
 
